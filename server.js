@@ -14,7 +14,7 @@ const app = express();
 
 // express boiler plate
 app.use(express.urlencoded({ extended: true }));
-app.use(expres.json());
+app.use(express.json());
 app.use(routes);
 
 // starting up the actual server
