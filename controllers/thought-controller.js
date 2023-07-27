@@ -2,11 +2,10 @@
 
 // import the models that will be used here
 const { User, Thought } = require('../models');
-const { create, findOneAndUpdate, findOneAndDelete } = require('../models/User');
 
 const thoughtController = {
 
-    // get all thoughts independent of 
+    // get all thoughts independent of User
     async getThoughts(req, res){
         try {
             const thoughtData = await Thought.find();
@@ -27,11 +26,15 @@ const thoughtController = {
         }
     },
 
+    // create a thought, ***needs to have userId in the request body to assign it to a user***
     async createThought(req, res){
         try {
-            console.log('RUNNING...');
             const thoughtData = await Thought.create(req.body);
-            // const userData = await findOneAndUpdate()
+            const userData = await User.findOneAndUpdate(
+                { _id: req.body.userId },
+                // we use $push for arrays, instead of $set
+                { $push: { thoughts: thoughtData._id } }
+                );
             res.status(200).json(thoughtData);
         } catch (err) {
             console.log(err);
@@ -39,7 +42,8 @@ const thoughtController = {
         }
     },
 
-    async updateThought(){
+    // update a thought based on the passed thoughtId endpoint
+    async updateThought(req, res){
         try {
             const thoughtData = await Thought.findOneAndUpdate(
                 { 
@@ -54,17 +58,20 @@ const thoughtController = {
         }
     },
 
-    async deleteThought(){
+    // deletes a thought based on its id
+    async deleteThought(req, res){
         try {
             const thoughtData = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
-            res.status(200).json({ message: 'Thought successfully deleted' });
+            const userData = await User.findOneAndUpdate(
+                { thoughts: req.params.thoughtId },
+                { $pull: { thoughts: req.params.thoughtId } }
+            ); // ===== might need to add some code here =====
+            res.status(200).json({ message: 'Thought successfully deleted and removed from the associated user.' });
         } catch (err){
             console.log(err);
             res.status(500).json(err);
         }
     }
-
 }
-
 
 module.exports = thoughtController;
