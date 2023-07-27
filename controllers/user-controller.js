@@ -5,6 +5,7 @@ const { User } = require('../models');
 
 const userController = {
 
+    // creates a user based on the contents of the request body
     async createUser(req, res){
         console.log(req.body);
         try {
