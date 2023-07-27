@@ -1,7 +1,7 @@
 // all of the route functions for User will go here
 
 // import models that we will be using
-const User = require('../models');
+const { User } = require('../models');
 
 const userController = {
 
@@ -11,6 +11,7 @@ const userController = {
             const userData = await User.create(req.body);
             res.status(200).json(userData);
         } catch (err) {
+            console.log(err);
             res.status(500).json(err);
         }
     },
@@ -21,6 +22,7 @@ const userController = {
             const userData = await User.find();
             res.status(200).json(userData);
         } catch (err) {
+            console.log(err);
             res.status(500).json(err);
         }
     },
