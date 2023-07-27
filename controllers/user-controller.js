@@ -2,12 +2,21 @@
 
 // import models that we will be using
 const User = require('../models');
-const { findOneAndDelete } = require('../models/User');
 
 const userController = {
 
+    async createUser(req, res){
+        console.log(req.body);
+        try {
+            const userData = await User.create(req.body);
+            res.status(200).json(userData);
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
+
     // gets all users
-    async getUsers(req, res) {
+    async getUsers(req, res){
         try {
             const userData = await User.find();
             res.status(200).json(userData);
