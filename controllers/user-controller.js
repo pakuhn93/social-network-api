@@ -2,6 +2,7 @@
 
 // import models that we will be using
 const User = require('../models');
+const { findOneAndDelete } = require('../models/User');
 
 const userControllers = () => {
 
@@ -59,10 +60,26 @@ const userControllers = () => {
                     _id: req.params.userId 
                 },
                 {
-                    // appends the friendId to the user's friends array
+                    // this aggregate appends the friendId to the user's friends array
                     $addToSet: req.params.friendId
                 }); // ===== might need to add more code here =====
             
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    }
+
+    // removes a friend based on the userId param and friendId param passed when calling the delete friend endpoint
+    const removeFriend = async (req, res) => {
+        try {
+            const userData = await findOneAndDelete(
+                {
+                    _id: req.params.userId
+                },
+                {
+                    $pull: req.params.friendId
+                });
+            res.status(200).json({ message: 'Friend successfully removed'})
         } catch (err) {
             res.status(500).json(err);
         }
