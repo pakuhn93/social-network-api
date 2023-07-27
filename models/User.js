@@ -15,8 +15,9 @@ const userSchema = new Schema(
             type: String,
             required: true,
             unique: true,
-            trim: true
-            // ===== validation goes here =====
+            trim: true,
+            // strings have a match validator that takes in a Regular Expression (regex)
+            match: /.+.@+.+\..+/ // using RegEx to match the format of an email
         },
         // an array of Thought objects, populated by referencing a Thought object with its ObjectId
         thoughts: [
