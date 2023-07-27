@@ -4,30 +4,30 @@
 const User = require('../models');
 const { findOneAndDelete } = require('../models/User');
 
-const userControllers = () => {
+const userController = {
 
     // gets all users
-    const getUsers = async(req, res) => {
+    async getUsers(req, res) {
         try {
             const userData = await User.find();
             res.status(200).json(userData);
         } catch (err) {
             res.status(500).json(err);
         }
-    }
+    },
 
     // gets a single user based on the parameter passed via the endpoint
-    const getSingleUser = async(req, res) => {
+    async getSingleUser(req, res){
         try {
             const userData = await User.findOne({ _id: req.params.userId });
             res.status(200).json(userData);
         } catch (err) {
             res.status(500).json(err);
         }
-    }
+    },
 
     // finds a user based on the parameter passed via the endpoint and updates them based on the body passed through the request
-    const updateUser = async(req, res) => {
+    async updateUser(req, res){
         try {
             const userData = await User.findOneAndUpdate(
                 { 
@@ -40,20 +40,20 @@ const userControllers = () => {
         } catch (err) {
             res.status(500).json(err);
         }
-    }
+    },
 
     // deletes a single user based on the parameter passed via the endpoint and deletes them
-    const deleteUser = async(req, res) => {
+    async deleteUser(req, res){
         try {
             const userData = await findOneAndDelete({ _id: req.params.userId });
             res.status(200).json({ message: 'User Deleted!'});
         } catch (err) {
             res.status(500).json(err);
         }
-    }
+    },
 
     // updates a user's friends property to contain the userId of the added friend
-    const addFriend = async(req, res) => {
+    async addFriend(req, res){
         try {
             const userData = await findOneAndUpdate(
                 { 
@@ -67,16 +67,17 @@ const userControllers = () => {
         } catch (err) {
             res.status(500).json(err);
         }
-    }
+    },
 
     // removes a friend based on the userId param and friendId param passed when calling the delete friend endpoint
-    const removeFriend = async (req, res) => {
+    async removeFriend(req, res){
         try {
             const userData = await findOneAndDelete(
                 {
                     _id: req.params.userId
                 },
                 {
+                    // slices a friend from the friends array based on their friendId
                     $pull: req.params.friendId
                 });
             res.status(200).json({ message: 'Friend successfully removed'})
@@ -85,4 +86,5 @@ const userControllers = () => {
         }
     }
 }
-module.exports = userControllers;
+
+module.exports = userController;
